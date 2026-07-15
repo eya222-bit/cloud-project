@@ -24,6 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
+          LOCALSTACK_AUTH_TOKEN:${ls-JIVu8982-NAji-NEjE-3917-kUrILeLaea7f} 
 
     steps:
       - name: Checkout du code
