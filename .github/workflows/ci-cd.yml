@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    name: Validation Terraform + LocalStack
+    runs-on: ubuntu-latest
+
+    services:
+      localstack:
+        image: localstack/localstack
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: s3,ec2
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt (vérifie le formatage)
+        working-directory: ./terraform
+        run: terraform fmt -check
+
+      - name: Terraform init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform validate
+        working-directory: ./terraform
+        run: terraform validate
+
+      - name: Terraform apply (sur LocalStack)
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+  docker-build:
+    name: Build image Docker TeleAssist
+    runs-on: ubuntu-latest
+    needs: terraform
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Build l'image Docker
+        run: docker build -t teleassist:latest .
+
+      - name: Vérifie que l'image existe
+        run: docker images | grep teleassist
