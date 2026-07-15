@@ -19,7 +19,7 @@ jobs:
           - 4566:4566
         env:
           SERVICES: s3,ec2
-          LOCALSTACK_AUTH_TOKEN: ${{ secrets.ls-qeFOLEMU-DOXA-KUDE-6427-LijudEyO79dd }}
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
         options: >-
           --health-cmd="curl -f http://localhost:4566/_localstack/health || exit 1"
           --health-interval=10s
