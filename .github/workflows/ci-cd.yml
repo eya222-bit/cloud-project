@@ -1,3 +1,4 @@
+
 name: CI/CD Pipeline
 
 on:
@@ -18,13 +19,12 @@ jobs:
           - 4566:4566
         env:
           SERVICES: s3,ec2
-          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: 1
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.ls-JIVu8982-NAji-NEjE-3917-kUrILeLaea7f }}
         options: >-
           --health-cmd="curl -f http://localhost:4566/_localstack/health || exit 1"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
-          LOCALSTACK_AUTH_TOKEN: ${{secrets.ls-JIVu8982-NAji-NEjE-3917-kUrILeLaea7f}}
 
     steps:
       - name: Checkout du code
@@ -33,7 +33,7 @@ jobs:
       - name: Installer Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform fmt (vérifie le formatage)
+      - name: Terraform fmt
         working-directory: ./terraform
         run: terraform fmt -check
 
@@ -45,7 +45,7 @@ jobs:
         working-directory: ./terraform
         run: terraform validate
 
-      - name: Terraform apply (sur LocalStack)
+      - name: Terraform apply
         working-directory: ./terraform
         run: terraform apply -auto-approve
 
