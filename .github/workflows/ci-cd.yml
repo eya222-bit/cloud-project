@@ -19,6 +19,11 @@ jobs:
         env:
           SERVICES: s3,ec2
           LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: 1
+        options: >-
+          --health-cmd="curl -f http://localhost:4566/_localstack/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout du code
